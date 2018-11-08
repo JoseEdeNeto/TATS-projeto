@@ -20,9 +20,16 @@ public class RegisterPage extends BasePage{
     
     @FindBy(xpath = "//*[@id=\"register\"]/div[4]/div[2]/button")
     WebElement buttonRegister;
+    
+    @FindBy(xpath = "/html/body/div/div[2]/p")
+    WebElement formTitle;
 
     public RegisterPage(WebDriver driver) {
         super(driver);
+    }
+    
+    public String getFormTitle() {
+        return formTitle.getText();
     }
     
     public RegisterPage setEmail(String email) {
@@ -45,6 +52,7 @@ public class RegisterPage extends BasePage{
     
     public HomePage addValidData() {
         buttonRegister.click();
+        
         return new HomePage(driver);
     }
 
