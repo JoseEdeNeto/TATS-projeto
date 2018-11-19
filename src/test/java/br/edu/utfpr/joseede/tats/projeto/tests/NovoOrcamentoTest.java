@@ -1,8 +1,10 @@
 package br.edu.utfpr.joseede.tats.projeto.tests;
 
+import br.edu.utfpr.joseede.tats.projeto.pageobjects.FaturasPage;
 import br.edu.utfpr.joseede.tats.projeto.pageobjects.HomePage;
-import br.edu.utfpr.joseede.tats.projeto.pageobjects.NewUserPage;
-import br.edu.utfpr.joseede.tats.projeto.pageobjects.RegisterPage;
+import br.edu.utfpr.joseede.tats.projeto.pageobjects.LoginPage;
+import br.edu.utfpr.joseede.tats.projeto.pageobjects.OrcamentosPage;
+import br.edu.utfpr.joseede.tats.projeto.pageobjects.RegrasPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
@@ -14,7 +16,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-public class RegisterTest {
+public class NovoOrcamentoTest {
     
     private WebDriver driver;
     
@@ -34,25 +36,20 @@ public class RegisterTest {
     @After
     public void after() {
         driver.close();
-    }    
+    }
     
     @Test
-    public void testSuccessfulAccountRegister() {
-        driver.get("http://192.168.0.109/register");
-        RegisterPage registerPage = new RegisterPage(driver);
+    public void testNovoOrcamento() {
+        driver.get("http://192.168.0.109/");
+        LoginPage loginPage = new LoginPage(driver);
+        HomePage homePage = loginPage.setEmail("teste@teste.com").setPassword("teste").addValidData();
         
-        NewUserPage newUserPage = registerPage.setEmail("teste@teste.com")
-                                        .setPassword("teste")
-                                        .setPassword2("teste")
-                                        .addValidData();
+        OrcamentosPage orcamentosPage = homePage.clickMenuCriarNovasCoisas()
+                                                .clickMenuNovoOrcamento();
         
-        HomePage homePage = newUserPage.setNomeBanco("Banco do Brasil")
-                                        .setSaldo("2000")
-                                        .selectLanguage("pt_BR")
-                                        .goToHomePage();
-        
-        homePage.clickSkipAlert();
-        
-        assertEquals("Firefly III O que está passando?", homePage.getTitle());
-    }    
+        homePage = orcamentosPage.setNome("nova orcamento")
+                                .submitFormNovoOrcamento();
+
+        assertEquals("Sucesso!", homePage.getMensagem());
+    }
 }

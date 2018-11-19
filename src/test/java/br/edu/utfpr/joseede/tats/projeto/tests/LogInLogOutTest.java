@@ -1,8 +1,8 @@
 package br.edu.utfpr.joseede.tats.projeto.tests;
 
 import br.edu.utfpr.joseede.tats.projeto.pageobjects.HomePage;
-import br.edu.utfpr.joseede.tats.projeto.pageobjects.NewUserPage;
-import br.edu.utfpr.joseede.tats.projeto.pageobjects.RegisterPage;
+import br.edu.utfpr.joseede.tats.projeto.pageobjects.LoginPage;
+import br.edu.utfpr.joseede.tats.projeto.pageobjects.TagsPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
@@ -14,8 +14,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-public class RegisterTest {
-    
+public class LogInLogOutTest {
     private WebDriver driver;
     
     @BeforeClass
@@ -34,25 +33,16 @@ public class RegisterTest {
     @After
     public void after() {
         driver.close();
-    }    
+    }
     
     @Test
-    public void testSuccessfulAccountRegister() {
-        driver.get("http://192.168.0.109/register");
-        RegisterPage registerPage = new RegisterPage(driver);
+    public void testLogInLogOut() {
+        driver.get("http://192.168.0.109/");
+        LoginPage loginPage = new LoginPage(driver);
+        HomePage homePage = loginPage.setEmail("teste@teste.com").setPassword("teste").addValidData();
         
-        NewUserPage newUserPage = registerPage.setEmail("teste@teste.com")
-                                        .setPassword("teste")
-                                        .setPassword2("teste")
-                                        .addValidData();
+        loginPage = homePage.clickMenuDesconectar();
         
-        HomePage homePage = newUserPage.setNomeBanco("Banco do Brasil")
-                                        .setSaldo("2000")
-                                        .selectLanguage("pt_BR")
-                                        .goToHomePage();
-        
-        homePage.clickSkipAlert();
-        
-        assertEquals("Firefly III O que está passando?", homePage.getTitle());
-    }    
+        assertEquals("Sign in to start your session", loginPage.getMensagem());
+    }
 }

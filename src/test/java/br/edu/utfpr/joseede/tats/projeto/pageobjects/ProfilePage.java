@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ProfilePage extends BasePage{
     
-    @FindBy(xpath = "//*[@id=\"app\"]/div[1]/section[2]/div[1]/div/div/div[2]/ul/li[3]/a")
+    @FindBy(xpath = "//*[@id=\"app\"]/div[1]/section[2]/div[2]/div/div/div[2]/ul/li[3]/a")
     WebElement linkDeleteAccount;
     
     @FindBy(xpath = "//*[@id=\"app\"]/div[1]/section[1]/h1")
@@ -26,8 +26,8 @@ public class ProfilePage extends BasePage{
     public DeleteAccountPage goToDeleteAccount() {
         linkDeleteAccount.click();
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until((ExpectedCondition<Boolean>) (WebDriver d) -> d.findElement(By.xpath("//*[@id=\"subTitle\"]")).
-                getText().toLowerCase().startsWith("delete"));
+        wait.until((ExpectedCondition<Boolean>) (WebDriver d) -> d.findElement(By.xpath("//*[@id=\"delete-account\"]/div/div/div/div[1]/h3")).
+                getText().toLowerCase().startsWith("apagar"));
         return new DeleteAccountPage(driver);
     }
     

@@ -14,9 +14,16 @@ public class LoginPage extends BasePage{
     
     @FindBy(xpath = "/html/body/div/div[2]/form/div[3]/div[2]/button")
     WebElement buttonLogin;
+    
+    @FindBy(xpath = "/html/body/div/div[2]/p")
+    WebElement mensagem;
 
     public LoginPage(WebDriver driver) {
         super(driver);
+    }
+    
+    public String getMensagem() {
+        return mensagem.getText();
     }
     
     public LoginPage setEmail(String email) {

@@ -50,10 +50,10 @@ public class RegisterPage extends BasePage{
         return this;
     }
     
-    public HomePage addValidData() {
+    public NewUserPage addValidData() {
         buttonRegister.click();
         
-        return new HomePage(driver);
+        return new NewUserPage(driver);
     }
 
     public String getInputEmail() {
