@@ -30,6 +30,9 @@ public class TransacoesPage extends BasePage{
     
     public TransacoesPage clickAlertPular() {
         alertPular.click();
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until((ExpectedCondition<Boolean>) (WebDriver d) -> d.findElement(By.xpath("//*[@id=\"app\"]/div[1]/section[1]/h1/text()")).
+                getText().toLowerCase().startsWith("transações"));
         return this;
     }
     
