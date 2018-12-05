@@ -3,7 +3,6 @@ package br.edu.utfpr.joseede.tats.projeto.tests;
 import br.edu.utfpr.joseede.tats.projeto.pageobjects.ContasPage;
 import br.edu.utfpr.joseede.tats.projeto.pageobjects.HomePage;
 import br.edu.utfpr.joseede.tats.projeto.pageobjects.LoginPage;
-import br.edu.utfpr.joseede.tats.projeto.pageobjects.TransacoesPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
@@ -16,8 +15,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class NovaContaAtivoTest {
+    
+    //Pré-condições
+    //Ter completado o cadastro de usuário, com email sendo “teste@teste.com”, senha sendo “teste”.
+    //OBS: CT1 realiza o cadastro com essas informações.
 
     private WebDriver driver;
+    LoginPage loginPage;
+    HomePage homePage;
+    ContasPage contasPage;
     
     @BeforeClass
     public static void beforeClass() {
@@ -29,26 +35,38 @@ public class NovaContaAtivoTest {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("start-maximized");
         driver = new ChromeDriver(chromeOptions);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);     
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        loginPage = new LoginPage(driver);
     }
     
     @After
     public void after() {
-        driver.close();
+        contasPage = homePage.clickMenuContas()
+                             .clickMenuContasAtivo();
+        contasPage.clickBotaoDeletar()
+                  .clickConfirmarDeletar();
+        driver.quit();
     }
     
     @Test
     public void testNovaContaAtivo() {
-        driver.get("http://192.168.0.109/");
-        LoginPage loginPage = new LoginPage(driver);
-        HomePage homePage = loginPage.setEmail("teste@teste.com").setPassword("teste").addValidData();
+        homePage = loginPage.goToLoginPage()
+                                     .setEmail("teste@teste.com")
+                                     .setPassword("teste")
+                                     .addValidData();
         
-        ContasPage contasPage = homePage.clickMenuCriarNovasCoisas()
-                                        .clickMenuNovaContaAtivo();  
+        if(homePage.alertPresente())
+            homePage.clickSkipAlert();
+        
+        contasPage = homePage.clickMenuCriarNovasCoisas()
+                            .clickMenuNovaContaAtivo();  
+        
+        if(contasPage.alertPresente())
+            contasPage.clickAlertPular();
         
         contasPage.setNome("nova conta")
-                .submitFormNovaConta();
+                  .submitFormNovaConta();
         
-        assertEquals("Sucesso!", contasPage.getMensagem());
+        assertEquals("Sucesso!", homePage.getMensagem());
     }
 }

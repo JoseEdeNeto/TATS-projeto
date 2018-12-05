@@ -44,6 +44,15 @@ public class HomePage extends BasePage{
     @FindBy(xpath = "//*[@id=\"app\"]/aside[1]/section/ul/li[11]/a")
     WebElement menuDesconectar;
     
+    @FindBy(xpath = "//*[@id=\"budget-menu\"]/a")
+    WebElement menuOrcamentos;
+    
+    @FindBy(xpath = "//*[@id=\"account-menu\"]")
+    WebElement menuContas;
+    
+    @FindBy(xpath = "//*[@id=\"account-menu\"]/ul/li[1]/a")
+    WebElement menuContasAtivo;
+    
     @FindBy(xpath = "//*[@id=\"app\"]/div[1]/section[2]/div[2]/strong")
     WebElement mensagem;
     
@@ -58,6 +67,30 @@ public class HomePage extends BasePage{
     
     public String getMensagem() {
         return mensagem.getText();
+    }
+    
+    public ContasPage clickMenuContasAtivo(){
+        menuContasAtivo.click();
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until((ExpectedCondition<Boolean>) (WebDriver d) -> d.findElement(By.xpath("//*[@id=\"app\"]/div[1]/section[1]/h1")).
+                getText().toLowerCase().startsWith("contas"));
+        return new ContasPage(driver);
+    }
+    
+    public HomePage clickMenuContas(){
+        menuContas.click();
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until((ExpectedCondition<Boolean>) (WebDriver d) -> d.findElement(By.xpath("//*[@id=\"account-menu\"]/ul/li[1]/a")).
+                getText().toLowerCase().startsWith("contas"));
+        return this;
+    }
+    
+    public OrcamentosPage clickMenuOrcamentos(){
+        menuOrcamentos.click();
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until((ExpectedCondition<Boolean>) (WebDriver d) -> d.findElement(By.xpath("//*[@id=\"app\"]/div[1]/section[1]/h1")).
+                getText().toLowerCase().startsWith("or"));
+        return new OrcamentosPage(driver);
     }
     
     public HomePage clickMenuOptions(){
@@ -79,6 +112,10 @@ public class HomePage extends BasePage{
     public LoginPage clickMenuDesconectar() {
         menuDesconectar.click();
         return new LoginPage(driver);
+    }
+    
+    public boolean alertPresente(){
+        return !driver.findElements(By.xpath("/html/body/div[8]/div/div[5]/a[1]")).isEmpty();
     }
     
     public HomePage clickSkipAlert(){

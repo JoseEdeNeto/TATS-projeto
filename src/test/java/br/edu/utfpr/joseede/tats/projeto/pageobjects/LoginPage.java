@@ -16,14 +16,26 @@ public class LoginPage extends BasePage{
     WebElement buttonLogin;
     
     @FindBy(xpath = "/html/body/div/div[2]/p")
+    WebElement head;
+    
+    @FindBy(xpath = "/html/body/div/div[2]/div/div/strong")
     WebElement mensagem;
 
     public LoginPage(WebDriver driver) {
         super(driver);
     }
     
-    public String getMensagem() {
+    public LoginPage goToLoginPage() {
+        driver.get("http://192.168.0.109/");
+        return this;
+    }
+    
+    public String getMensagem(){
         return mensagem.getText();
+    }
+    
+    public String getHead() {
+        return head.getText();
     }
     
     public LoginPage setEmail(String email) {
@@ -41,5 +53,10 @@ public class LoginPage extends BasePage{
     public HomePage addValidData() {
         buttonLogin.click();
         return new HomePage(driver);
+    }
+    
+    public LoginPage addInvalidData() {
+        buttonLogin.click();
+        return this;
     }
 }

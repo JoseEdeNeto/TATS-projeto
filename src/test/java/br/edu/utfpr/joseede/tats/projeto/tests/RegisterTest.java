@@ -33,18 +33,18 @@ public class RegisterTest {
     
     @After
     public void after() {
-        driver.close();
+        driver.quit();
     }    
     
     @Test
     public void testSuccessfulAccountRegister() {
-        driver.get("http://192.168.0.109/register");
         RegisterPage registerPage = new RegisterPage(driver);
         
-        NewUserPage newUserPage = registerPage.setEmail("teste@teste.com")
-                                        .setPassword("teste")
-                                        .setPassword2("teste")
-                                        .addValidData();
+        NewUserPage newUserPage = registerPage.goToRegisterPage()
+                                              .setEmail("teste@teste.com")
+                                              .setPassword("teste")
+                                              .setPassword2("teste")
+                                              .addValidData();
         
         HomePage homePage = newUserPage.setNomeBanco("Banco do Brasil")
                                         .setSaldo("2000")

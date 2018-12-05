@@ -18,8 +18,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class NovoDepositoTest {
+    
+    //Pré-condições
+    //Ter completado o cadastro de usuário, com email sendo “teste@teste.com”, senha sendo “teste”.
+    //OBS: CT1 realiza o cadastro com essas informações.
 
     private WebDriver driver;
+    LoginPage loginPage;
+    HomePage homePage;
+    TransacoesPage transacoesPage;
     
     @BeforeClass
     public static void beforeClass() {
@@ -31,7 +38,8 @@ public class NovoDepositoTest {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("start-maximized");
         driver = new ChromeDriver(chromeOptions);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);     
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        loginPage = new LoginPage(driver);
     }
     
     @After
@@ -41,23 +49,21 @@ public class NovoDepositoTest {
     
     @Test
     public void testNovoDeposito() {
-        driver.get("http://192.168.0.109/");
-        LoginPage loginPage = new LoginPage(driver);
-        HomePage homePage = loginPage.setEmail("teste@teste.com").setPassword("teste").addValidData();
+        homePage = loginPage.goToLoginPage()
+                            .setEmail("teste@teste.com")
+                            .setPassword("teste")
+                            .addValidData();
         
-        TransacoesPage transacoesPage = homePage.clickMenuCriarNovasCoisas()
+        transacoesPage = homePage.clickMenuCriarNovasCoisas()
                                                 .clickMenuNovoDeposito();
         
-        try{
+        if(transacoesPage.alertPresente())
             transacoesPage.clickAlertPular();
-        } catch (Exception e){
-        }  
         
-        HomePage home2 = transacoesPage.setDescricao("depósito")
-                                .selectConta("Banco do Brasil (€200000)")
+        homePage = transacoesPage.setDescricao("depósito")
                                 .setValorDeposito("1000")
                                 .submitDeposito();
         
-        assertEquals("Sucesso!", home2.getMensagem());
+        assertEquals("Sucesso!", homePage.getMensagem());
     }
 }

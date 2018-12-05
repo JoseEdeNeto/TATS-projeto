@@ -17,8 +17,14 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class NovaTagTest {
+    
+    //Pré-condições
+    //Ter completado o cadastro de usuário, com email sendo “teste@teste.com”, senha sendo “teste”.
+    //OBS: CT1 realiza o cadastro com essas informações.
 
     private WebDriver driver;
+    LoginPage loginPage;
+    TagsPage tagsPage;
     
     @BeforeClass
     public static void beforeClass() {
@@ -30,21 +36,26 @@ public class NovaTagTest {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("start-maximized");
         driver = new ChromeDriver(chromeOptions);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);     
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        loginPage = new LoginPage(driver);
     }
     
     @After
     public void after() {
-        driver.close();
+        tagsPage.clickTag()
+                .clickBotaoDeletar()
+                .clickConfirmarDeletar();
+        driver.quit();
     }
     
     @Test
     public void testNovaTag() {
-        driver.get("http://192.168.0.109/");
-        LoginPage loginPage = new LoginPage(driver);
-        HomePage homePage = loginPage.setEmail("teste@teste.com").setPassword("teste").addValidData();
+        HomePage homePage = loginPage.goToLoginPage()
+                            .setEmail("teste@teste.com")
+                            .setPassword("teste")
+                            .addValidData();
         
-        TagsPage tagsPage = homePage.clickMenuTags();
+        tagsPage = homePage.clickMenuTags();
         
         tagsPage.clickBotaoCriarUmaTag()
                 .setEtiqueta("tag")

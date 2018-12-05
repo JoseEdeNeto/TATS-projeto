@@ -16,7 +16,7 @@ public class TransacoesPage extends BasePage{
     @FindBy(xpath = "//*[@id=\"ffInput_amount\"]")
     WebElement inputValorDeposito;
     
-    Select selectContaDeposito = new Select(driver.findElement(By.xpath("//*[@id=\"ffInput_destination_id\"]")));
+    Select selectContaDeposito;
     
     @FindBy(xpath = "//*[@id=\"store\"]")
     WebElement formDeposito;
@@ -28,11 +28,12 @@ public class TransacoesPage extends BasePage{
         super(driver);
     }
     
+    public boolean alertPresente(){
+        return !driver.findElements(By.xpath("/html/body/div[7]/div/div[5]/a[1]")).isEmpty();
+    }
+    
     public TransacoesPage clickAlertPular() {
         alertPular.click();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until((ExpectedCondition<Boolean>) (WebDriver d) -> d.findElement(By.xpath("//*[@id=\"app\"]/div[1]/section[1]/h1/text()")).
-                getText().toLowerCase().startsWith("transações"));
         return this;
     }
     
@@ -45,11 +46,6 @@ public class TransacoesPage extends BasePage{
     public TransacoesPage setValorDeposito(String valor) {
         inputValorDeposito.clear();
         inputValorDeposito.sendKeys(valor);
-        return this;
-    }
-    
-    public TransacoesPage selectConta(String conta) {
-        selectContaDeposito.selectByVisibleText(conta);
         return this;
     }
     

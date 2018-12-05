@@ -17,6 +17,15 @@ public class TagsPage extends BasePage{
     
     @FindBy(xpath = "//*[@id=\"app\"]/div[1]/section[2]/div[2]/strong")
     WebElement mensagem;
+    
+    @FindBy(xpath = "//*[@id=\"app\"]/div[1]/section[2]/div[4]/div/div/div[2]/p/a/i")
+    WebElement tag;
+    
+    @FindBy(xpath = "//*[@id=\"app\"]/div[1]/section[2]/div[2]/div[1]/div/div[3]/div/a[2]")
+    WebElement botaoDeletar;
+    
+    @FindBy(xpath = "//*[@id=\"destroy\"]/div/div/div/div[3]/input")
+    WebElement botaoConfirmarDeletar;
 
     public TagsPage(WebDriver driver) {
         super(driver);
@@ -24,6 +33,21 @@ public class TagsPage extends BasePage{
     
     public String getMensagem(){
         return mensagem.getText();
+    }
+    
+    public TagsPage clickBotaoDeletar(){
+        botaoDeletar.click();
+        return this;
+    }
+    
+    public TagsPage clickConfirmarDeletar(){
+        botaoConfirmarDeletar.click();
+        return this;
+    }
+    
+    public TagsPage clickTag(){
+        tag.click();
+        return this;
     }
     
     public TagsPage clickBotaoCriarUmaTag() {

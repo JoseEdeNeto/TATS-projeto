@@ -28,6 +28,11 @@ public class RegisterPage extends BasePage{
         super(driver);
     }
     
+    public RegisterPage goToRegisterPage(){
+        driver.get("http://192.168.0.109/");
+        return this;
+    }
+    
     public String getFormTitle() {
         return formTitle.getText();
     }

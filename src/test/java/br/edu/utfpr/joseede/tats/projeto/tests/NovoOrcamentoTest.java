@@ -18,7 +18,14 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 public class NovoOrcamentoTest {
     
+    //Pré-condições
+    //Ter completado o cadastro de usuário, com email sendo “teste@teste.com”, senha sendo “teste”.
+    //OBS: CT1 realiza o cadastro com essas informações.
+    
     private WebDriver driver;
+    LoginPage loginPage;
+    HomePage homePage;
+    OrcamentosPage orcamentosPage;
     
     @BeforeClass
     public static void beforeClass() {
@@ -30,25 +37,34 @@ public class NovoOrcamentoTest {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("start-maximized");
         driver = new ChromeDriver(chromeOptions);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);     
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        loginPage = new LoginPage(driver);
     }
     
     @After
     public void after() {
-        driver.close();
+        orcamentosPage = homePage.clickMenuOrcamentos();
+        orcamentosPage.clickAlert()
+                      .clickBotaoDeletar()
+                      .clickConfirmaDeletar();
+        driver.quit();
     }
     
     @Test
     public void testNovoOrcamento() {
-        driver.get("http://192.168.0.109/");
-        LoginPage loginPage = new LoginPage(driver);
-        HomePage homePage = loginPage.setEmail("teste@teste.com").setPassword("teste").addValidData();
+        homePage = loginPage.goToLoginPage()
+                                     .setEmail("teste@teste.com")
+                                     .setPassword("teste")
+                                     .addValidData();
         
-        OrcamentosPage orcamentosPage = homePage.clickMenuCriarNovasCoisas()
-                                                .clickMenuNovoOrcamento();
+        if(homePage.alertPresente())
+            homePage.clickSkipAlert();
+        
+        orcamentosPage = homePage.clickMenuCriarNovasCoisas()
+                                 .clickMenuNovoOrcamento();
         
         homePage = orcamentosPage.setNome("nova orcamento")
-                                .submitFormNovoOrcamento();
+                                 .submitFormNovoOrcamento();
 
         assertEquals("Sucesso!", homePage.getMensagem());
     }

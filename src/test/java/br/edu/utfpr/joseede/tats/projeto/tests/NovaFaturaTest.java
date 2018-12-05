@@ -4,7 +4,6 @@ import br.edu.utfpr.joseede.tats.projeto.pageobjects.FaturasPage;
 import br.edu.utfpr.joseede.tats.projeto.pageobjects.HomePage;
 import br.edu.utfpr.joseede.tats.projeto.pageobjects.LoginPage;
 import br.edu.utfpr.joseede.tats.projeto.pageobjects.RegrasPage;
-import br.edu.utfpr.joseede.tats.projeto.pageobjects.TransacoesPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
@@ -17,8 +16,16 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class NovaFaturaTest {
+    
+    //Pré-condições
+    //Ter completado o cadastro de usuário, com email sendo “teste@teste.com”, senha sendo “teste”.
+    //OBS: CT1 realiza o cadastro com essas informações.
 
     private WebDriver driver;
+    LoginPage loginPage;
+    HomePage homePage;
+    FaturasPage faturasPage;
+    RegrasPage regrasPage;
     
     @BeforeClass
     public static void beforeClass() {
@@ -30,66 +37,65 @@ public class NovaFaturaTest {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("start-maximized");
         driver = new ChromeDriver(chromeOptions);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);     
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        loginPage = new LoginPage(driver);
     }
     
     @After
     public void after() {
-        driver.close();
+        faturasPage = regrasPage.goToFaturas();
+        faturasPage = faturasPage.clickAlertDeletar()
+                .deletarFatura()
+                .confirmaDeletar();
+        driver.quit();
     }
     
     @Test
     public void testNovaFaturaValida() {
-        driver.get("http://192.168.0.109/");
-        LoginPage loginPage = new LoginPage(driver);
-        HomePage homePage = loginPage.setEmail("teste@teste.com").setPassword("teste").addValidData();
+        homePage = loginPage.goToLoginPage()
+                                     .setEmail("teste@teste.com")
+                                     .setPassword("teste")
+                                     .addValidData();
         
-        FaturasPage faturasPage = homePage.clickMenuCriarNovasCoisas()
-                                                .clickMenuNovaFatura();
+        faturasPage = homePage.clickMenuCriarNovasCoisas()
+                                          .clickMenuNovaFatura();
         
-        try{
+        if(faturasPage.alertPresente())
             faturasPage.clickAlertPular();
-        } catch (Exception e){
-        }  
+            
+        regrasPage = faturasPage.setNome("nova fatura")
+                                            .setValorMinimo("500")
+                                            .setValorMaximo("1000")
+                                            .selectRepeticoes("monthly")
+                                            .submitNovaFatura();
         
-        RegrasPage regrasPage = faturasPage.setNome("nova fatura")
-                                    .setValorMinimo("500")
-                                    .setValorMaximo("1000")
-                                    .selectRepeticoes("monthly")
-                                    .submitNovaFatura();
-        
-        try{
+        if(regrasPage.alertPresente())
             regrasPage.clickAlertPular();
-        } catch (Exception e){
-        } 
         
         assertEquals("Sucesso!", regrasPage.getTitulo());
     }
     
     @Test
     public void testNovaFaturaInvalida() {
-        driver.get("http://192.168.0.109/");
-        LoginPage loginPage = new LoginPage(driver);
-        HomePage homePage = loginPage.setEmail("teste@teste.com").setPassword("teste").addValidData();
+        homePage = loginPage.goToLoginPage()
+                                     .setEmail("teste@teste.com")
+                                     .setPassword("teste")
+                                     .addValidData();
         
-        FaturasPage faturasPage = homePage.clickMenuCriarNovasCoisas()
+        faturasPage = homePage.clickMenuCriarNovasCoisas()
                                                 .clickMenuNovaFatura();
         
-        try{
+        if(faturasPage.alertPresente())
             faturasPage.clickAlertPular();
-        } catch (Exception e){
-        }  
         
-        RegrasPage regrasPage = faturasPage.setNome("fatura")
+        regrasPage = faturasPage.setNome("fatura")
                                     .setValorMinimo("1500")
                                     .setValorMaximo("1000")
                                     .selectRepeticoes("monthly")
                                     .submitNovaFatura();
         
-        try{
-            regrasPage.clickAlertPular();
-        } catch (Exception e){
-        } 
+        if(regrasPage.alertPresente())
+            regrasPage.clickAlertPular(); 
         
         assertEquals("Erro!", regrasPage.getTitulo());
     }

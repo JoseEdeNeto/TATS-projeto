@@ -8,7 +8,6 @@ import br.edu.utfpr.joseede.tats.projeto.pageobjects.RegisterPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,7 +18,13 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 public class DeleteAccountTest {
     
+    //Pré-condições
+    //Ter completado o cadastro de usuário, com email sendo “teste@teste.com”, senha sendo “teste”.
+    //OBS: CT1 realiza o cadastro com essas informações.
+
+    
     private WebDriver driver;
+    LoginPage loginPage;
     
     @BeforeClass
     public static void beforeClass() {
@@ -31,24 +36,29 @@ public class DeleteAccountTest {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("start-maximized");
         driver = new ChromeDriver(chromeOptions);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);     
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        loginPage = new LoginPage(driver);
     }
     
     @After
     public void after() {
-        driver.close();
+        driver.quit();
     }
     
     @Test
-    public void testDeleteAccount() {
-        driver.get("http://192.168.0.109/");
-        LoginPage loginPage = new LoginPage(driver);
-        HomePage homePage = loginPage.setEmail("teste@teste.com").setPassword("teste").addValidData();
+    public void testDeleteAccount() {   
+        HomePage homePage = loginPage.goToLoginPage()
+                                     .setEmail("teste@teste.com")
+                                     .setPassword("teste")
+                                     .addValidData();
         
-        ProfilePage profilePage = homePage.clickMenuOptions().goToProfile();
+        ProfilePage profilePage = homePage.clickMenuOptions()
+                                          .goToProfile();
         
         DeleteAccountPage deleteAccountPage = profilePage.goToDeleteAccount();
-        RegisterPage registerPage = deleteAccountPage.setPassword("teste").addValidData();
+        
+        RegisterPage registerPage = deleteAccountPage.setPassword("teste")
+                                                     .addValidData();
         
         assertEquals("Register a new account", registerPage.getFormTitle());
     }

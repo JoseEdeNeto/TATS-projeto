@@ -1,6 +1,7 @@
 package br.edu.utfpr.joseede.tats.projeto.pageobjects;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -22,13 +23,41 @@ public class FaturasPage extends BasePage{
     @FindBy(xpath = "//*[@id=\"ffInput_amount_max\"]")
     WebElement inputValorMaximo;
     
-    Select selectRepeticoes = new Select(driver.findElement(By.xpath("//*[@id=\"ffInput_repeat_freq\"]")));
-    
     @FindBy(xpath = "//*[@id=\"store\"]")
     WebElement formNovaFatura;
     
+    @FindBy(xpath = "//*[@id=\"app\"]/div[1]/section[2]/div[2]/div/div/div[2]/table/tbody/tr/td[1]/div/a[2]")
+    WebElement botaoDeletaFatura;
+    
+    @FindBy(xpath = "//*[@id=\"destroy\"]/div/div/div/div[3]/input")
+    WebElement botaoConfirmaDeletar;
+    
+    @FindBy(xpath = "/html/body/div[7]/div/div[5]/a[1]")
+    WebElement alertDeletar;
+    
     public FaturasPage(WebDriver driver) {
         super(driver);
+    }
+    
+    public FaturasPage clickAlertDeletar(){
+        if (!driver.findElements(By.xpath("/html/body/div[7]/div/div[5]/a[1]")).isEmpty()) {
+            alertDeletar.click();
+        }
+        return this;
+    }
+    
+    public FaturasPage deletarFatura(){
+        botaoDeletaFatura.sendKeys(Keys.RETURN);
+        return this;
+    }
+
+    public FaturasPage confirmaDeletar(){
+        botaoConfirmaDeletar.click();
+        return this;
+    }
+    
+    public boolean alertPresente(){
+        return !driver.findElements(By.xpath("/html/body/div[8]/div/div[5]/a[1]")).isEmpty();
     }
     
     public FaturasPage clickAlertPular(){
@@ -55,6 +84,7 @@ public class FaturasPage extends BasePage{
     }
     
     public FaturasPage selectRepeticoes(String repeticoes) {
+        Select selectRepeticoes = new Select(driver.findElement(By.xpath("//*[@id=\"ffInput_repeat_freq\"]")));
         selectRepeticoes.selectByValue(repeticoes);
         return this;
     }
